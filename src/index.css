@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+[dir='rtl'] {
+  font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: #f0f2f5;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Custom scrollbar for RTL */
+[dir='rtl'] ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+[dir='rtl'] ::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+[dir='rtl'] ::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+[dir='rtl'] ::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
