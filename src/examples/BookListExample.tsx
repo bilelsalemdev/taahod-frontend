@@ -19,16 +19,6 @@ export function BookListExample() {
   const createBook = useCreateBook();
   const deleteBook = useDeleteBook();
 
-  const handleUpload = async (formData: FormData) => {
-    try {
-      await createBook.mutateAsync(formData);
-      alert('Book uploaded successfully!');
-    } catch (err) {
-      const message = getErrorMessage(err, language);
-      alert(`Error: ${message}`);
-    }
-  };
-
   const handleDelete = async (bookId: string) => {
     if (confirm('Are you sure you want to delete this book?')) {
       try {
@@ -58,7 +48,7 @@ export function BookListExample() {
       
       {/* Book List */}
       <div>
-        {books.map((book) => (
+        {books.map((book: any) => (
           <div key={book._id}>
             <h3>{language === 'ar' ? book.titleAr : book.title}</h3>
             <p>{language === 'ar' ? book.authorAr : book.author}</p>

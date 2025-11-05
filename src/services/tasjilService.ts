@@ -1,5 +1,5 @@
 import { api } from './api';
-import { Tasjil, ApiResponse } from '../types';
+import type { Tasjil, ApiResponse } from '../types';
 
 export const tasjilService = {
   async getAll(): Promise<ApiResponse<{ recordings: Tasjil[]; count: number }>> {

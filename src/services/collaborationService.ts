@@ -1,5 +1,5 @@
 import { api } from './api';
-import { Collaboration, ApiResponse, Progress } from '../types';
+import type { Collaboration, ApiResponse, Progress } from '../types';
 
 export const collaborationService = {
   async getAll(): Promise<ApiResponse<{ collaborations: Collaboration[]; count: number }>> {

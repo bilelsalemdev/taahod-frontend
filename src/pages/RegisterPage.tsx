@@ -4,7 +4,7 @@ import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
-import { RegisterData } from '../types/auth';
+import type { RegisterData } from '../types/auth';
 
 const { Title, Text } = Typography;
 const { Option } = Select;

@@ -4,7 +4,7 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
-import { LoginCredentials } from '../types/auth';
+import type { LoginCredentials } from '../types/auth';
 
 const { Title, Text } = Typography;
 

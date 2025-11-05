@@ -1,5 +1,5 @@
 import { api } from './api';
-import { Progress, ApiResponse } from '../types';
+import type { Progress, ApiResponse } from '../types';
 
 export const progressService = {
   async getAll(): Promise<ApiResponse<{ progress: Progress[]; count: number }>> {

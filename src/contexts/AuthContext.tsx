@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { message } from 'antd';
 import { authService } from '../services/authService';
-import {
+import type {
   User,
   LoginCredentials,
   RegisterData,

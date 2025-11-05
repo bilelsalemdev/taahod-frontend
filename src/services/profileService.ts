@@ -1,6 +1,6 @@
 import { api } from './api';
-import { ApiResponse } from '../types';
-import { User } from '../types/auth';
+import type { ApiResponse } from '../types';
+import type { User } from '../types/auth';
 
 export interface ProfileData {
   user: User;

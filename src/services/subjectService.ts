@@ -1,5 +1,5 @@
 import { api } from './api';
-import { Subject, ApiResponse } from '../types';
+import type { Subject, ApiResponse } from '../types';
 
 export const subjectService = {
   async getAll(): Promise<ApiResponse<{ subjects: Subject[]; count: number }>> {

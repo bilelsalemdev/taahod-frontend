@@ -1,5 +1,5 @@
 import { api } from './api';
-import { Schedule, ApiResponse } from '../types';
+import type { Schedule, ApiResponse } from '../types';
 
 export const scheduleService = {
   async get(): Promise<

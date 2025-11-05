@@ -1,5 +1,5 @@
 import { api } from './api';
-import { Adhkar, ApiResponse } from '../types';
+import type { Adhkar, ApiResponse } from '../types';
 
 export const adhkarService = {
   async getAll(): Promise<ApiResponse<{ adhkar: Adhkar[]; count: number }>> {

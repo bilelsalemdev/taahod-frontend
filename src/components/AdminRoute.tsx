@@ -1,5 +1,4 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
 import { Result, Button } from 'antd';
 import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';

@@ -1,5 +1,5 @@
 import { api } from './api';
-import { Book, ApiResponse, PaginatedResponse, PaginationParams } from '../types';
+import type { Book, ApiResponse, PaginatedResponse, PaginationParams } from '../types';
 
 export const bookService = {
   async getAll(params?: PaginationParams): Promise<PaginatedResponse<Book>> {

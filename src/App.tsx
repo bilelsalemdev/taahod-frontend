@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { LoginPage } from './pages/LoginPage';
-import { RegisterPage } from './pages/RegisterPage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 import { HomePage } from './pages/HomePage';
 import { SubjectListPage } from './pages/SubjectListPage';
 import { SubjectDetailPage } from './pages/SubjectDetailPage';
