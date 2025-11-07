@@ -25,6 +25,7 @@ import {
   useLeaveCollaboration,
 } from '../hooks/useCollaborations';
 import { useBooks } from '../hooks/useBooks';
+import { IslamicPattern, CornerOrnament } from '../components/patterns';
 import type { Collaboration, Book } from '../types';
 
 export function CollaborationsPage() {
@@ -92,18 +93,32 @@ export function CollaborationsPage() {
   }
 
   return (
-    <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
-      <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1>
-          <TeamOutlined /> {t('collaboration.myCollaborations')}
-        </h1>
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => setIsCreateModalOpen(true)}
-        >
-          {t('collaboration.createCollaboration')}
-        </Button>
+    <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+      <div
+        style={{
+          marginBottom: '32px',
+          padding: '32px',
+          background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)',
+          borderRadius: '16px',
+          color: 'white',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        <IslamicPattern type="geometric" opacity={0.1} color="#d97706" />
+        <div style={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+          <h1 style={{ color: 'white', fontFamily: "'Amiri', serif", fontSize: '32px', margin: 0 }}>
+            <TeamOutlined /> {t('collaboration.myCollaborations')}
+          </h1>
+          <Button
+            icon={<PlusOutlined />}
+            onClick={() => setIsCreateModalOpen(true)}
+            size="large"
+            style={{ background: 'var(--color-accent-gold)', border: 'none', color: 'white' }}
+          >
+            {t('collaboration.createCollaboration')}
+          </Button>
+        </div>
       </div>
 
       {collaborations.length === 0 ? (
@@ -125,6 +140,11 @@ export function CollaborationsPage() {
                 <Card
                   hoverable
                   onClick={() => navigate(`/collaborations/${collab._id}`)}
+                  style={{
+                    borderRadius: '12px',
+                    border: '2px solid var(--color-accent-gold)',
+                    position: 'relative',
+                  }}
                   actions={[
                     <Button
                       type="link"
@@ -149,8 +169,9 @@ export function CollaborationsPage() {
                     </Button>,
                   ]}
                 >
+                  <CornerOrnament position="top-right" color="var(--color-accent-gold)" size={25} />
                   <Card.Meta
-                    avatar={<TeamOutlined style={{ fontSize: '32px', color: '#1890ff' }} />}
+                    avatar={<TeamOutlined style={{ fontSize: '32px', color: 'var(--color-primary)' }} />}
                     title={collab.name}
                     description={
                       <Space direction="vertical" style={{ width: '100%' }}>

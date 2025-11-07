@@ -3,6 +3,7 @@ import { Card, Empty, Spin, Select, Collapse, Tag, Space, Typography } from 'ant
 import { BookOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { useAdhkar, useAdhkarByCategory } from '../hooks/useAdhkar';
+import { IslamicPattern, CornerOrnament } from '../components/patterns';
 import type { Adhkar } from '../types';
 
 const { Panel } = Collapse;
@@ -44,16 +45,62 @@ export function AdhkarPage() {
   }
 
   return (
-    <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
-      <div style={{ marginBottom: '24px' }}>
-        <Title level={1}>
-          <BookOutlined /> {t('adhkar.dailyAdhkar')}
-        </Title>
+    <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+      {/* Header Section */}
+      <div
+        style={{
+          marginBottom: '32px',
+          padding: '32px',
+          background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)',
+          borderRadius: '16px',
+          color: 'white',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        <IslamicPattern type="star" opacity={0.1} color="#d97706" />
+        <CornerOrnament position="all" color="rgba(217, 119, 6, 0.5)" size={35} />
+        <div style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
+          <BookOutlined style={{ fontSize: '48px', marginBottom: '16px' }} />
+          <Title
+            level={1}
+            style={{
+              color: 'white',
+              fontFamily: "'Amiri', serif",
+              fontSize: '36px',
+              margin: 0,
+            }}
+          >
+            {t('adhkar.dailyAdhkar')}
+          </Title>
+          <div
+            style={{
+              height: '2px',
+              width: '100px',
+              background: 'linear-gradient(90deg, transparent, #d97706, transparent)',
+              margin: '16px auto',
+            }}
+          />
+          <Text style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '16px' }}>
+            الأذكار والأدعية المأثورة من الكتاب والسنة
+          </Text>
+        </div>
       </div>
 
-      <Card style={{ marginBottom: '24px' }}>
+      {/* Filter Card */}
+      <Card
+        style={{
+          marginBottom: '24px',
+          borderRadius: '12px',
+          border: '2px solid var(--color-accent-gold)',
+          position: 'relative',
+        }}
+      >
+        <CornerOrnament position="top-right" color="var(--color-accent-gold)" size={25} />
         <Space direction="vertical" style={{ width: '100%' }}>
-          <Text strong>{t('adhkar.filterByCategory')}</Text>
+          <Text strong style={{ fontSize: '16px', color: 'var(--color-primary)' }}>
+            {t('adhkar.filterByCategory')}
+          </Text>
           <Select
             value={selectedCategory}
             onChange={setSelectedCategory}
@@ -95,24 +142,45 @@ export function AdhkarPage() {
               <Card>
                 <Space direction="vertical" style={{ width: '100%' }} size="large">
                   {/* Arabic Text */}
-                  <div>
-                    <Text strong style={{ display: 'block', marginBottom: '8px' }}>
-                      {t('adhkar.arabicText')}:
-                    </Text>
-                    <Paragraph
+                  <div style={{ position: 'relative' }}>
+                    <Text
+                      strong
                       style={{
-                        fontSize: '24px',
-                        lineHeight: '2',
-                        textAlign: 'right',
-                        direction: 'rtl',
-                        fontFamily: 'Traditional Arabic, Arial',
-                        backgroundColor: '#f9f9f9',
-                        padding: '16px',
-                        borderRadius: '8px',
+                        display: 'block',
+                        marginBottom: '12px',
+                        color: 'var(--color-primary)',
+                        fontSize: '16px',
                       }}
                     >
-                      {dhikr.textAr}
-                    </Paragraph>
+                      {t('adhkar.arabicText')}:
+                    </Text>
+                    <div
+                      style={{
+                        position: 'relative',
+                        background: 'var(--color-bg-cream)',
+                        padding: '24px',
+                        borderRadius: '12px',
+                        border: '2px solid var(--color-accent-gold)',
+                        overflow: 'hidden',
+                      }}
+                    >
+                      <IslamicPattern type="arabesque" opacity={0.03} color="var(--color-primary)" />
+                      <Paragraph
+                        style={{
+                          fontSize: '28px',
+                          lineHeight: '2.2',
+                          textAlign: 'center',
+                          direction: 'rtl',
+                          fontFamily: "'Amiri', 'Scheherazade New', serif",
+                          color: 'var(--color-text-primary)',
+                          margin: 0,
+                          position: 'relative',
+                          zIndex: 1,
+                        }}
+                      >
+                        {dhikr.textAr}
+                      </Paragraph>
+                    </div>
                   </div>
 
                   {/* Transliteration */}

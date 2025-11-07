@@ -16,6 +16,7 @@ import {
 import { BookOutlined, ClockCircleOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { useProgress, useProgressStats } from '../hooks/useProgress';
+import { IslamicPattern, CornerOrnament } from '../components/patterns';
 import type { Progress as ProgressType, Book } from '../types';
 
 export function ProgressDashboardPage() {
@@ -48,9 +49,22 @@ export function ProgressDashboardPage() {
   }
 
   return (
-    <div style={{ padding: '24px', maxWidth: '1400px', margin: '0 auto' }}>
-      <div style={{ marginBottom: '24px' }}>
-        <h1>{t('profile.progressDashboard')}</h1>
+    <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+      <div
+        style={{
+          marginBottom: '32px',
+          padding: '32px',
+          background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)',
+          borderRadius: '16px',
+          color: 'white',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        <IslamicPattern type="star" opacity={0.1} color="#d97706" />
+        <h1 style={{ color: 'white', fontFamily: "'Amiri', serif", fontSize: '32px', margin: 0, position: 'relative', zIndex: 1 }}>
+          {t('profile.progressDashboard')}
+        </h1>
       </div>
 
       {/* Statistics */}
@@ -130,12 +144,18 @@ export function ProgressDashboardPage() {
                 <Card
                   hoverable
                   onClick={() => navigate(`/books/${book._id}`)}
+                  style={{
+                    borderRadius: '12px',
+                    border: '2px solid var(--color-accent-gold)',
+                    position: 'relative',
+                  }}
                   actions={[
-                    <Button type="link" key="continue">
+                    <Button type="link" key="continue" style={{ color: 'var(--color-primary)', fontWeight: 'bold' }}>
                       {isCompleted ? t('library.readBook') : t('profile.continueReading')}
                     </Button>,
                   ]}
                 >
+                  <CornerOrnament position="top-right" color="var(--color-accent-gold)" size={25} />
                   <Card.Meta
                     avatar={<BookOutlined style={{ fontSize: '32px', color: '#1890ff' }} />}
                     title={book.titleAr}
