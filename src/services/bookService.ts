@@ -34,4 +34,16 @@ export const bookService = {
   getFileUrl(id: string): string {
     return `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/books/${id}/file`;
   },
+
+  async downloadFile(id: string): Promise<Blob> {
+    const response = await api.get(`/books/${id}/file`, {
+      responseType: 'blob',
+    });
+    return response.data;
+  },
+
+  async getFileBlob(id: string): Promise<string> {
+    const blob = await this.downloadFile(id);
+    return URL.createObjectURL(blob);
+  },
 };

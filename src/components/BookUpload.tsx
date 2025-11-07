@@ -5,6 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { useSubjects } from '../hooks/useSubjects';
 import { useCreateBook } from '../hooks/useBooks';
 import type { UploadFile } from 'antd';
+import { pdfjs } from 'react-pdf';
+
+// Configure PDF.js worker
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 const { TextArea } = Input;
 const { Dragger } = Upload;
@@ -20,11 +24,24 @@ export function BookUpload({ open, onClose, onSuccess }: BookUploadProps) {
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [totalPages, setTotalPages] = useState<number>(0);
 
   const { data: subjectsData } = useSubjects();
   const createBook = useCreateBook();
 
   const subjects = subjectsData?.data?.subjects || [];
+
+  // Extract page count from PDF
+  const extractPdfPageCount = async (file: File): Promise<number> => {
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjs.getDocument({ data: arrayBuffer }).promise;
+      return pdf.numPages;
+    } catch (error) {
+      console.error('Error extracting PDF page count:', error);
+      return 0;
+    }
+  };
 
   const handleSubmit = async (values: any) => {
     if (fileList.length === 0) {
@@ -32,19 +49,35 @@ export function BookUpload({ open, onClose, onSuccess }: BookUploadProps) {
       return;
     }
 
+    // Get the actual file object
+    const file = fileList[0].originFileObj || fileList[0];
+    
+    if (!file) {
+      message.error('File not found. Please select a file again.');
+      return;
+    }
+
     const formData = new FormData();
-    formData.append('file', fileList[0].originFileObj as File);
+    // Append the file with the correct field name
+    formData.append('file', file as Blob, (file as File).name);
     formData.append('titleAr', values.titleAr);
     formData.append('title', values.title);
     formData.append('authorAr', values.authorAr);
     formData.append('author', values.author);
     formData.append('subjectId', values.subjectId);
+    formData.append('totalPages', totalPages.toString());
     
     if (values.descriptionAr) {
       formData.append('descriptionAr', values.descriptionAr);
     }
     if (values.description) {
       formData.append('description', values.description);
+    }
+
+    // Debug: Log FormData contents
+    console.log('FormData contents:');
+    for (const pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
     }
 
     try {
@@ -55,6 +88,7 @@ export function BookUpload({ open, onClose, onSuccess }: BookUploadProps) {
       form.resetFields();
       setFileList([]);
       setUploadProgress(0);
+      setTotalPages(0);
       onSuccess?.();
       onClose();
     } catch (error: any) {
@@ -67,12 +101,13 @@ export function BookUpload({ open, onClose, onSuccess }: BookUploadProps) {
     form.resetFields();
     setFileList([]);
     setUploadProgress(0);
+    setTotalPages(0);
     onClose();
   };
 
   const uploadProps = {
     fileList,
-    beforeUpload: (file: File) => {
+    beforeUpload: async (file: File) => {
       const isPDF = file.type === 'application/pdf';
       if (!isPDF) {
         message.error('You can only upload PDF files!');
@@ -83,11 +118,19 @@ export function BookUpload({ open, onClose, onSuccess }: BookUploadProps) {
         message.error('File must be smaller than 50MB!');
         return false;
       }
+      
+      // Extract page count from PDF
+      message.loading({ content: 'Analyzing PDF...', key: 'pdf-analysis' });
+      const pageCount = await extractPdfPageCount(file);
+      setTotalPages(pageCount);
+      message.success({ content: `PDF has ${pageCount} pages`, key: 'pdf-analysis', duration: 2 });
+      
       setFileList([file as any]);
       return false;
     },
     onRemove: () => {
       setFileList([]);
+      setTotalPages(0);
     },
     maxCount: 1,
   };

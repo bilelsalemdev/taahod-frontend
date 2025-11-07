@@ -35,9 +35,20 @@ export function BookDetailPage() {
     return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
   };
 
-  const handleDownload = () => {
-    const fileUrl = bookService.getFileUrl(id!);
-    window.open(fileUrl, '_blank');
+  const handleDownload = async () => {
+    try {
+      const blob = await bookService.downloadFile(id!);
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${book.titleAr || book.title}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Download failed:', error);
+    }
   };
 
   if (bookLoading) {
@@ -97,7 +108,6 @@ export function BookDetailPage() {
             children: (
               <div style={{ height: 'calc(100vh - 200px)' }}>
                 <BookViewer
-                  fileUrl={bookService.getFileUrl(id!)}
                   bookId={id!}
                   initialPage={progress?.currentPage || 1}
                   totalPages={book.totalPages}

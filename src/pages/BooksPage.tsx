@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, Row, Col, Button, Empty, Spin, Input, Pagination, Tag } from 'antd';
-import { PlusOutlined, BookOutlined } from '@ant-design/icons';
+import { Card, Row, Col, Button, Empty, Spin, Input, Pagination, Tag, message, App } from 'antd';
+import { PlusOutlined, BookOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
-import { useBooks } from '../hooks/useBooks';
+import { useBooks, useDeleteBook } from '../hooks/useBooks';
 import { useAuth } from '../contexts/AuthContext';
 import { BookUpload } from '../components/BookUpload';
 import { CornerOrnament } from '../components/patterns';
@@ -15,6 +15,7 @@ export function BooksPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { modal } = App.useApp();
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
@@ -24,6 +25,27 @@ export function BooksPage() {
   const books = data?.data?.books || [];
   const pagination = data?.data?.pagination;
   const isAdmin = user?.role === 'admin';
+
+  const deleteBook = useDeleteBook();
+
+  const handleDelete = (bookId: string, bookTitle: string) => {
+    modal.confirm({
+      title: t('library.deleteBook'),
+      icon: <ExclamationCircleOutlined />,
+      content: `${t('library.confirmDelete')} "${bookTitle}"?`,
+      okText: t('common.delete'),
+      okType: 'danger',
+      cancelText: t('common.cancel'),
+      onOk: async () => {
+        try {
+          await deleteBook.mutateAsync(bookId);
+          message.success(t('library.deleteSuccess'));
+        } catch (error: any) {
+          message.error(error.messageAr || error.message || t('common.error'));
+        }
+      },
+    });
+  };
 
   const filteredBooks = books.filter((book: Book) =>
     book.titleAr.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -140,6 +162,26 @@ export function BooksPage() {
                         }}
                       />
                     </div>
+                  }
+                  actions={
+                    isAdmin
+                      ? [
+                          <Button
+                            key="delete"
+                            type="text"
+                            danger
+                            icon={<DeleteOutlined />}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              handleDelete(book._id, book.titleAr);
+                            }}
+                            loading={deleteBook.isPending}
+                          >
+                            {t('common.delete')}
+                          </Button>,
+                        ]
+                      : undefined
                   }
                 >
                   <Card.Meta

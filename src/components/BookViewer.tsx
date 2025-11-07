@@ -10,6 +10,7 @@ import {
 } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { useSaveProgress } from '../hooks/useProgress';
+import { bookService } from '../services';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
@@ -17,7 +18,6 @@ import 'react-pdf/dist/Page/TextLayer.css';
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 interface BookViewerProps {
-  fileUrl: string;
   bookId: string;
   initialPage?: number;
   totalPages?: number;
@@ -25,7 +25,6 @@ interface BookViewerProps {
 }
 
 export function BookViewer({
-  fileUrl,
   bookId,
   initialPage = 1,
   totalPages: initialTotalPages,
@@ -35,12 +34,44 @@ export function BookViewer({
   const [numPages, setNumPages] = useState<number>(initialTotalPages || 0);
   const [pageNumber, setPageNumber] = useState<number>(initialPage);
   const [scale, setScale] = useState<number>(1.0);
+  const [pdfBlobUrl, setPdfBlobUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const saveProgress = useSaveProgress();
 
   useEffect(() => {
     setPageNumber(initialPage);
   }, [initialPage]);
+
+  // Load PDF with authentication
+  useEffect(() => {
+    let isMounted = true;
+    
+    const loadPdf = async () => {
+      try {
+        setLoading(true);
+        const blobUrl = await bookService.getFileBlob(bookId);
+        if (isMounted) {
+          setPdfBlobUrl(blobUrl);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('Failed to load PDF:', error);
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadPdf();
+
+    return () => {
+      isMounted = false;
+      if (pdfBlobUrl) {
+        URL.revokeObjectURL(pdfBlobUrl);
+      }
+    };
+  }, [bookId]);
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
@@ -137,27 +168,33 @@ export function BookViewer({
           backgroundColor: '#525659',
         }}
       >
-        <Document
-          file={fileUrl}
-          onLoadSuccess={onDocumentLoadSuccess}
-          loading={
-            <div style={{ textAlign: 'center', padding: '50px' }}>
-              <Spin size="large" />
-            </div>
-          }
-          error={
-            <div style={{ textAlign: 'center', padding: '50px', color: 'white' }}>
-              {t('common.error')}
-            </div>
-          }
-        >
-          <Page
-            pageNumber={pageNumber}
-            scale={scale}
-            renderTextLayer={true}
-            renderAnnotationLayer={true}
-          />
-        </Document>
+        {loading || !pdfBlobUrl ? (
+          <div style={{ textAlign: 'center', padding: '50px' }}>
+            <Spin size="large" />
+          </div>
+        ) : (
+          <Document
+            file={pdfBlobUrl}
+            onLoadSuccess={onDocumentLoadSuccess}
+            loading={
+              <div style={{ textAlign: 'center', padding: '50px' }}>
+                <Spin size="large" />
+              </div>
+            }
+            error={
+              <div style={{ textAlign: 'center', padding: '50px', color: 'white' }}>
+                {t('common.error')}
+              </div>
+            }
+          >
+            <Page
+              pageNumber={pageNumber}
+              scale={scale}
+              renderTextLayer={true}
+              renderAnnotationLayer={true}
+            />
+          </Document>
+        )}
       </div>
     </div>
   );
