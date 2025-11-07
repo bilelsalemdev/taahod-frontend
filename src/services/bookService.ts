@@ -38,6 +38,13 @@ export const bookService = {
   async downloadFile(id: string): Promise<Blob> {
     const response = await api.get(`/books/${id}/file`, {
       responseType: 'blob',
+      timeout: 300000, // 5 minutes for large files
+      onDownloadProgress: (progressEvent) => {
+        if (progressEvent.total) {
+          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          console.log(`Download progress: ${percentCompleted}%`);
+        }
+      },
     });
     return response.data;
   },
