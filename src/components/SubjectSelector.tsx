@@ -2,6 +2,7 @@ import { Card, Checkbox, Row, Col, Empty, Spin, Tag } from 'antd';
 import { BookOutlined, CheckCircleFilled } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { useSubjects } from '../hooks/useSubjects';
+import { CornerOrnament } from './patterns';
 import type { Subject } from '../types';
 
 interface SubjectSelectorProps {
@@ -46,9 +47,11 @@ export function SubjectSelector({ selectedSubjectIds, onChange }: SubjectSelecto
   return (
     <div>
       <div style={{ marginBottom: '16px' }}>
-        <h3>{t('schedule.selectSubjects')}</h3>
+        <h3 style={{ fontFamily: "'Amiri', serif", color: 'var(--color-primary)' }}>
+          {t('schedule.selectSubjects')}
+        </h3>
         {selectedSubjectIds.length > 0 && (
-          <Tag color="blue">
+          <Tag color="green" style={{ fontSize: '14px' }}>
             {selectedSubjectIds.length} {t('schedule.selectedSubjects')}
           </Tag>
         )}
@@ -64,25 +67,49 @@ export function SubjectSelector({ selectedSubjectIds, onChange }: SubjectSelecto
                 hoverable
                 onClick={() => handleToggle(subject._id)}
                 style={{
-                  border: isSelected ? '2px solid #1890ff' : '1px solid #d9d9d9',
-                  backgroundColor: isSelected ? '#e6f7ff' : 'white',
+                  border: isSelected
+                    ? '2px solid var(--color-primary)'
+                    : '2px solid var(--color-warm-gray)',
+                  backgroundColor: isSelected ? 'var(--color-bg-cream)' : 'white',
                   position: 'relative',
+                  borderRadius: '12px',
+                  overflow: 'hidden',
                 }}
               >
-                {isSelected && (
-                  <CheckCircleFilled
-                    style={{
-                      position: 'absolute',
-                      top: '8px',
-                      right: '8px',
-                      fontSize: '24px',
-                      color: '#1890ff',
-                    }}
-                  />
-                )}
+                {isSelected ? (
+                  <>
+                    <CornerOrnament position="all" color="var(--color-accent-gold)" size={20} />
+                    <CheckCircleFilled
+                      style={{
+                        position: 'absolute',
+                        top: '8px',
+                        left: '8px',
+                        fontSize: '24px',
+                        color: 'var(--color-primary)',
+                        zIndex: 2,
+                      }}
+                    />
+                  </>
+                ) : null}
                 <Card.Meta
-                  avatar={<BookOutlined style={{ fontSize: '24px' }} />}
-                  title={subject.nameAr}
+                  avatar={
+                    <BookOutlined
+                      style={{
+                        fontSize: '24px',
+                        color: isSelected ? 'var(--color-primary)' : 'var(--color-text-secondary)',
+                      }}
+                    />
+                  }
+                  title={
+                    <span
+                      style={{
+                        fontFamily: "'Amiri', serif",
+                        color: isSelected ? 'var(--color-primary)' : 'var(--color-text-primary)',
+                      }}
+                    >
+                      {subject.nameAr}
+                    </span>
+                  }
                   description={subject.descriptionAr?.substring(0, 60) + '...'}
                 />
                 <div style={{ marginTop: '12px' }}>

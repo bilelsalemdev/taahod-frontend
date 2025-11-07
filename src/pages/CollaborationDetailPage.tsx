@@ -14,6 +14,7 @@ import {
 import { ArrowLeftOutlined, UserOutlined, BookOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { useCollaboration, useCollaborationProgress } from '../hooks/useCollaborations';
+import { CornerOrnament } from '../components/patterns';
 import type { Book, Progress as ProgressType } from '../types';
 
 export function CollaborationDetailPage() {
@@ -57,8 +58,18 @@ export function CollaborationDetailPage() {
         {t('common.back')}
       </Button>
 
-      <Card style={{ marginBottom: '24px' }}>
-        <h1>{collaboration.name}</h1>
+      <Card
+        style={{
+          marginBottom: '24px',
+          borderRadius: '12px',
+          border: '2px solid var(--color-accent-gold)',
+          position: 'relative',
+        }}
+      >
+        <CornerOrnament position="all" color="var(--color-accent-gold)" size={30} />
+        <h1 style={{ fontFamily: "'Amiri', serif", color: 'var(--color-primary)' }}>
+          {collaboration.name}
+        </h1>
         <Descriptions bordered column={1}>
           <Descriptions.Item label={t('library.bookTitle')}>
             <Space>

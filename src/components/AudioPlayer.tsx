@@ -5,6 +5,7 @@ import {
   PauseCircleOutlined,
   SoundOutlined,
 } from '@ant-design/icons';
+import { CornerOrnament } from './patterns';
 
 interface AudioPlayerProps {
   src: string;
@@ -72,12 +73,26 @@ export function AudioPlayer({ src, title, subtitle }: AudioPlayerProps) {
   };
 
   return (
-    <Card>
+    <Card
+      style={{
+        borderRadius: '12px',
+        border: '2px solid var(--color-accent-gold)',
+        background: 'var(--color-bg-cream)',
+        position: 'relative',
+      }}
+    >
+      <CornerOrnament position="all" color="var(--color-accent-gold)" size={25} />
       <audio ref={audioRef} src={src} preload="metadata" />
       
-      <div style={{ marginBottom: '16px' }}>
-        <h3 style={{ margin: 0 }}>{title}</h3>
-        {subtitle && <div style={{ color: '#888', fontSize: '14px' }}>{subtitle}</div>}
+      <div style={{ marginBottom: '16px', position: 'relative', zIndex: 1 }}>
+        <h3 style={{ margin: 0, fontFamily: "'Amiri', serif", color: 'var(--color-primary)' }}>
+          {title}
+        </h3>
+        {subtitle && (
+          <div style={{ color: 'var(--color-text-secondary)', fontSize: '14px' }}>
+            {subtitle}
+          </div>
+        )}
       </div>
 
       <Space direction="vertical" style={{ width: '100%' }}>

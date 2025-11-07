@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import { useSchedule, useGenerateSchedule, useDeleteSchedule } from '../hooks/useSchedule';
 import { SubjectSelector } from '../components/SubjectSelector';
+
 import type { Schedule, Subject } from '../types';
 
 const DAYS_OF_WEEK = [
@@ -97,9 +98,18 @@ export function SchedulePage() {
           return (
             <Card
               key={day.value}
-              title={day.labelAr}
+              title={
+                <span style={{ fontFamily: "'Amiri', serif", color: 'var(--color-primary)' }}>
+                  {day.labelAr}
+                </span>
+              }
               size="small"
-              style={{ minHeight: '300px' }}
+              style={{
+                minHeight: '300px',
+                borderRadius: '12px',
+                border: '2px solid var(--color-accent-gold)',
+                position: 'relative',
+              }}
             >
               {daySchedule.length === 0 ? (
                 <Empty
@@ -114,11 +124,16 @@ export function SchedulePage() {
                       <Card
                         key={entry._id}
                         size="small"
-                        style={{ backgroundColor: '#f0f0f0' }}
+                        style={{
+                          background: 'var(--color-bg-cream)',
+                          border: '1px solid var(--color-primary)',
+                          borderRadius: '8px',
+                        }}
                         actions={[
                           <DeleteOutlined
                             key="delete"
                             onClick={() => handleDeleteEntry(entry._id)}
+                            style={{ color: 'var(--color-error)' }}
                           />,
                         ]}
                       >
@@ -209,17 +224,43 @@ export function SchedulePage() {
   }
 
   return (
-    <div style={{ padding: '24px' }}>
-      <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1>{t('schedule.mySchedule')}</h1>
+    <div>
+      <div
+        style={{
+          marginBottom: '32px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '16px',
+        }}
+      >
+        <h1
+          style={{
+            fontFamily: "'Amiri', serif",
+            color: 'var(--color-primary)',
+            fontSize: '32px',
+            margin: 0,
+          }}
+        >
+          <CalendarOutlined /> {t('schedule.mySchedule')}
+        </h1>
         <Button
           type="primary"
           icon={<PlusOutlined />}
           onClick={() => setIsGenerateModalOpen(true)}
+          size="large"
         >
           {t('schedule.generateSchedule')}
         </Button>
       </div>
+      <div
+        style={{
+          height: '2px',
+          background: 'linear-gradient(90deg, var(--color-primary), var(--color-accent-gold), var(--color-primary))',
+          marginBottom: '24px',
+        }}
+      />
 
       {schedule.length === 0 ? (
         <Empty

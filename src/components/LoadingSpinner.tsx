@@ -1,5 +1,6 @@
-import { Spin } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
+import { motion } from 'framer-motion';
+import { IslamicSpinner } from './animated/IslamicSpinner';
+import { useAnimation } from '../hooks/useAnimation';
 
 interface LoadingSpinnerProps {
   size?: 'small' | 'default' | 'large';
@@ -7,18 +8,54 @@ interface LoadingSpinnerProps {
   fullScreen?: boolean;
 }
 
-export function LoadingSpinner({ size = 'large', tip, fullScreen = false }: LoadingSpinnerProps) {
+export function LoadingSpinner({
+  size = 'large',
+  tip,
+  fullScreen = false,
+}: LoadingSpinnerProps) {
+  const { shouldAnimate, getDuration } = useAnimation();
+
+  const spinnerSize = size === 'large' ? 'large' : size === 'small' ? 'small' : 'medium';
+
   const spinner = (
-    <Spin
-      size={size}
-      tip={tip}
-      indicator={<LoadingOutlined style={{ fontSize: size === 'large' ? 48 : 24 }} spin />}
-    />
+    <div style={{ textAlign: 'center' }}>
+      <motion.div
+        initial={shouldAnimate ? { opacity: 0, scale: 0.8 } : false}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{
+          duration: getDuration(400) / 1000,
+        }}
+      >
+        <IslamicSpinner size={spinnerSize} />
+      </motion.div>
+      {tip && (
+        <motion.div
+          initial={shouldAnimate ? { opacity: 0, y: 10 } : false}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{
+            duration: getDuration(400) / 1000,
+            delay: 0.2,
+          }}
+          style={{
+            marginTop: '16px',
+            color: 'var(--color-text-secondary)',
+            fontSize: '14px',
+          }}
+        >
+          {tip}
+        </motion.div>
+      )}
+    </div>
   );
 
   if (fullScreen) {
     return (
-      <div
+      <motion.div
+        initial={shouldAnimate ? { opacity: 0 } : false}
+        animate={{ opacity: 1 }}
+        transition={{
+          duration: getDuration(300) / 1000,
+        }}
         style={{
           display: 'flex',
           justifyContent: 'center',
@@ -28,13 +65,9 @@ export function LoadingSpinner({ size = 'large', tip, fullScreen = false }: Load
         }}
       >
         {spinner}
-      </div>
+      </motion.div>
     );
   }
 
-  return (
-    <div style={{ textAlign: 'center', padding: '50px' }}>
-      {spinner}
-    </div>
-  );
+  return <div style={{ padding: '50px' }}>{spinner}</div>;
 }

@@ -12,6 +12,7 @@ import { useBook } from '../hooks/useBooks';
 import { useBookProgress } from '../hooks/useProgress';
 import { bookService } from '../services';
 import { BookViewer } from '../components/BookViewer';
+import { CornerOrnament } from '../components/patterns';
 import type { Book } from '../types';
 
 export function BookDetailPage() {
@@ -58,15 +59,25 @@ export function BookDetailPage() {
   const subjectId = typeof book.subjectId === 'string' ? book.subjectId : book.subjectId._id;
 
   return (
-    <div style={{ padding: '24px', height: 'calc(100vh - 48px)' }}>
+    <div style={{ height: 'calc(100vh - 48px)' }}>
       <Space style={{ marginBottom: '16px' }}>
         <Button
           icon={<ArrowLeftOutlined />}
           onClick={() => navigate(`/subjects/${subjectId}`)}
+          size="large"
+          style={{
+            borderColor: 'var(--color-primary)',
+            color: 'var(--color-primary)',
+          }}
         >
           {t('common.back')}
         </Button>
-        <Button icon={<DownloadOutlined />} onClick={handleDownload}>
+        <Button
+          icon={<DownloadOutlined />}
+          onClick={handleDownload}
+          size="large"
+          type="primary"
+        >
           {t('library.downloadBook')}
         </Button>
       </Space>
@@ -103,7 +114,14 @@ export function BookDetailPage() {
               </span>
             ),
             children: (
-              <Card>
+              <Card
+                style={{
+                  borderRadius: '12px',
+                  border: '2px solid var(--color-accent-gold)',
+                  position: 'relative',
+                }}
+              >
+                <CornerOrnament position="all" color="var(--color-accent-gold)" size={30} />
                 <Descriptions bordered column={1}>
                   <Descriptions.Item label={t('library.bookTitle') + ' (عربي)'}>
                     {book.titleAr}

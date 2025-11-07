@@ -5,6 +5,7 @@ import { PlusOutlined, BookOutlined, EditOutlined, DeleteOutlined } from '@ant-d
 import { useTranslation } from 'react-i18next';
 import { useSubjects, useCreateSubject, useDeleteSubject } from '../hooks/useSubjects';
 import { useAuth } from '../contexts/AuthContext';
+import { CornerOrnament } from '../components/patterns';
 import type { Subject } from '../types';
 
 const { Search } = Input;
@@ -75,19 +76,45 @@ export function SubjectListPage() {
   }
 
   return (
-    <div style={{ padding: '24px' }}>
-      <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1>{t('library.allSubjects')}</h1>
+    <div>
+      <div
+        style={{
+          marginBottom: '32px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '16px',
+        }}
+      >
+        <h1
+          style={{
+            fontFamily: "'Amiri', serif",
+            color: 'var(--color-primary)',
+            fontSize: '32px',
+            margin: 0,
+          }}
+        >
+          {t('library.allSubjects')}
+        </h1>
         {isAdmin && (
           <Button
             type="primary"
             icon={<PlusOutlined />}
             onClick={() => setIsModalOpen(true)}
+            size="large"
           >
             {t('library.createSubject')}
           </Button>
         )}
       </div>
+      <div
+        style={{
+          height: '2px',
+          background: 'linear-gradient(90deg, var(--color-primary), var(--color-accent-gold), var(--color-primary))',
+          marginBottom: '24px',
+        }}
+      />
 
       <Search
         placeholder={t('common.search')}
@@ -100,31 +127,69 @@ export function SubjectListPage() {
       {filteredSubjects.length === 0 ? (
         <Empty description={t('library.noSubjects')} />
       ) : (
-        <Row gutter={[16, 16]}>
+        <Row gutter={[24, 24]}>
           {filteredSubjects.map((subject: Subject) => (
             <Col xs={24} sm={12} md={8} lg={6} key={subject._id}>
               <Card
                 hoverable
                 onClick={() => navigate(`/subjects/${subject._id}`)}
+                style={{
+                  borderRadius: '12px',
+                  border: '2px solid var(--color-warm-gray)',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  transition: 'all 0.3s ease',
+                }}
+                bodyStyle={{ padding: '24px' }}
                 actions={
                   isAdmin
                     ? [
-                        <EditOutlined key="edit" onClick={(e) => {
-                          e.stopPropagation();
-                          // TODO: Implement edit
-                        }} />,
-                        <DeleteOutlined key="delete" onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteSubject(subject._id);
-                        }} />,
+                        <EditOutlined
+                          key="edit"
+                          style={{ color: 'var(--color-primary)' }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            // TODO: Implement edit
+                          }}
+                        />,
+                        <DeleteOutlined
+                          key="delete"
+                          style={{ color: 'var(--color-error)' }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteSubject(subject._id);
+                          }}
+                        />,
                       ]
                     : undefined
                 }
               >
+                <CornerOrnament position="top-right" color="var(--color-accent-gold)" size={25} />
                 <Card.Meta
-                  avatar={<BookOutlined style={{ fontSize: '24px' }} />}
-                  title={subject.nameAr}
-                  description={subject.descriptionAr?.substring(0, 100) + '...'}
+                  avatar={
+                    <BookOutlined
+                      style={{
+                        fontSize: '32px',
+                        color: 'var(--color-primary)',
+                      }}
+                    />
+                  }
+                  title={
+                    <span
+                      style={{
+                        fontFamily: "'Amiri', serif",
+                        fontSize: '18px',
+                        color: 'var(--color-text-primary)',
+                      }}
+                    >
+                      {subject.nameAr}
+                    </span>
+                  }
+                  description={
+                    <span style={{ color: 'var(--color-text-secondary)' }}>
+                      {subject.descriptionAr?.substring(0, 80) + '...'}
+                    </span>
+                  }
                 />
               </Card>
             </Col>

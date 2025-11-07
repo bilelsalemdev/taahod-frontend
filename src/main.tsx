@@ -6,16 +6,19 @@ import './i18n/config'
 import App from './App.tsx'
 import { LanguageProvider } from './contexts/LanguageContext'
 import { AuthProvider } from './contexts/AuthContext'
+import { AnimationProvider } from './contexts/AnimationContext'
 import { queryClient } from './config/queryClient'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <LanguageProvider>
-          <App />
-        </LanguageProvider>
-      </AuthProvider>
+      <AnimationProvider>
+        <AuthProvider>
+          <LanguageProvider>
+            <App />
+          </LanguageProvider>
+        </AuthProvider>
+      </AnimationProvider>
     </QueryClientProvider>
   </StrictMode>,
 )

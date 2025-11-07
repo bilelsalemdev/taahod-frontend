@@ -36,12 +36,9 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
   children,
 }) => {
   const { i18n } = useTranslation();
-  const [language, setLanguage] = useState<Language>(
-    (localStorage.getItem('language') as Language) || 'ar'
-  );
-  const [direction, setDirection] = useState<Direction>(
-    language === 'ar' ? 'rtl' : 'ltr'
-  );
+  // Always default to Arabic, even if localStorage has a different value
+  const [language, setLanguage] = useState<Language>('ar');
+  const [direction, setDirection] = useState<Direction>('rtl');
 
   const changeLanguage = (lang: Language) => {
     setLanguage(lang);
@@ -70,10 +67,72 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
         direction={direction}
         theme={{
           token: {
-            fontFamily:
-              language === 'ar'
-                ? "'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
-                : "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+            // Typography
+            fontFamily: "'Cairo', 'Amiri', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+            fontFamilyCode: "'Courier New', monospace",
+            fontSize: 16,
+            lineHeight: 1.8,
+            
+            // Primary Colors - Emerald Green
+            colorPrimary: '#047857',
+            colorPrimaryHover: '#10b981',
+            colorPrimaryActive: '#065f46',
+            colorPrimaryBg: '#d1fae5',
+            colorPrimaryBgHover: '#a7f3d0',
+            colorPrimaryBorder: '#6ee7b7',
+            
+            // Success, Warning, Error, Info
+            colorSuccess: '#16a34a',
+            colorWarning: '#ea580c',
+            colorError: '#dc2626',
+            colorInfo: '#0284c7',
+            
+            // Background Colors
+            colorBgContainer: '#ffffff',
+            colorBgElevated: '#fef9e7',
+            colorBgLayout: '#fef3c7',
+            colorBgSpotlight: '#fde68a',
+            
+            // Text Colors
+            colorText: '#1c1917',
+            colorTextSecondary: '#57534e',
+            colorTextTertiary: '#a8a29e',
+            colorTextQuaternary: '#d6d3d1',
+            
+            // Border
+            colorBorder: '#e7e5e4',
+            colorBorderSecondary: '#f5f5f4',
+            borderRadius: 8,
+            
+            // Link
+            colorLink: '#047857',
+            colorLinkHover: '#10b981',
+            colorLinkActive: '#065f46',
+          },
+          components: {
+            Button: {
+              primaryColor: '#ffffff',
+              colorPrimary: '#047857',
+              colorPrimaryHover: '#10b981',
+              colorPrimaryActive: '#065f46',
+              algorithm: true,
+            },
+            Input: {
+              colorBorder: '#e7e5e4',
+              colorPrimaryHover: '#10b981',
+              activeBorderColor: '#047857',
+              hoverBorderColor: '#10b981',
+            },
+            Card: {
+              colorBgContainer: '#ffffff',
+              colorBorderSecondary: '#f5f5f4',
+            },
+            Menu: {
+              colorItemBg: 'transparent',
+              colorItemBgSelected: '#d1fae5',
+              colorItemTextSelected: '#047857',
+              colorItemBgHover: '#f0fdf4',
+            },
           },
         }}
       >

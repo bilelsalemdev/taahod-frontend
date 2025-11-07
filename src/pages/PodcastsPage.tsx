@@ -19,6 +19,7 @@ import { usePodcasts, useCreatePodcast, useDeletePodcast } from '../hooks/usePod
 import { podcastService } from '../services';
 import { AudioPlayer } from '../components/AudioPlayer';
 import { useAuth } from '../contexts/AuthContext';
+import { IslamicPattern, CornerOrnament } from '../components/patterns';
 import type { UploadFile } from 'antd';
 import type { Podcast } from '../types';
 
@@ -129,18 +130,34 @@ export function PodcastsPage() {
   }
 
   return (
-    <div style={{ padding: '24px' }}>
-      <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1>{t('audio.allPodcasts')}</h1>
-        {isAdmin && (
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => setIsUploadModalOpen(true)}
-          >
-            {t('audio.uploadPodcast')}
-          </Button>
-        )}
+    <div>
+      <div
+        style={{
+          marginBottom: '32px',
+          padding: '32px',
+          background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)',
+          borderRadius: '16px',
+          color: 'white',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        <IslamicPattern type="arabesque" opacity={0.1} color="#d97706" />
+        <div style={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+          <h1 style={{ color: 'white', fontFamily: "'Amiri', serif", fontSize: '32px', margin: 0 }}>
+            {t('audio.allPodcasts')}
+          </h1>
+          {isAdmin && (
+            <Button
+              icon={<PlusOutlined />}
+              onClick={() => setIsUploadModalOpen(true)}
+              size="large"
+              style={{ background: 'var(--color-accent-gold)', border: 'none', color: 'white' }}
+            >
+              {t('audio.uploadPodcast')}
+            </Button>
+          )}
+        </div>
       </div>
 
       {selectedPodcast && (
@@ -163,21 +180,29 @@ export function PodcastsPage() {
             <List.Item>
               <Card
                 hoverable
+                style={{
+                  borderRadius: '12px',
+                  border: '2px solid var(--color-accent-gold)',
+                  position: 'relative',
+                }}
                 actions={[
                   <PlayCircleOutlined
                     key="play"
                     onClick={() => setSelectedPodcast(podcast)}
+                    style={{ color: 'var(--color-primary)', fontSize: '20px' }}
                   />,
                   ...(isAdmin
                     ? [
                         <DeleteOutlined
                           key="delete"
                           onClick={() => handleDelete(podcast._id)}
+                          style={{ color: 'var(--color-error)', fontSize: '20px' }}
                         />,
                       ]
                     : []),
                 ]}
               >
+                <CornerOrnament position="top-right" color="var(--color-accent-gold)" size={25} />
                 <Card.Meta
                   title={podcast.titleAr}
                   description={

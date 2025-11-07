@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useBooks } from '../hooks/useBooks';
 import { useAuth } from '../contexts/AuthContext';
 import { BookUpload } from '../components/BookUpload';
+import { CornerOrnament } from '../components/patterns';
 import type { Book } from '../types';
 
 const { Search } = Input;
@@ -56,19 +57,45 @@ export function BooksPage() {
   }
 
   return (
-    <div style={{ padding: '24px' }}>
-      <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1>{t('library.allBooks')}</h1>
+    <div>
+      <div
+        style={{
+          marginBottom: '32px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '16px',
+        }}
+      >
+        <h1
+          style={{
+            fontFamily: "'Amiri', serif",
+            color: 'var(--color-primary)',
+            fontSize: '32px',
+            margin: 0,
+          }}
+        >
+          {t('library.allBooks')}
+        </h1>
         {isAdmin && (
           <Button
             type="primary"
             icon={<PlusOutlined />}
             onClick={() => setIsUploadModalOpen(true)}
+            size="large"
           >
             {t('library.uploadBook')}
           </Button>
         )}
       </div>
+      <div
+        style={{
+          height: '2px',
+          background: 'linear-gradient(90deg, var(--color-primary), var(--color-accent-gold), var(--color-primary))',
+          marginBottom: '24px',
+        }}
+      />
 
       <Search
         placeholder={t('common.search')}
@@ -82,12 +109,18 @@ export function BooksPage() {
         <Empty description={t('library.noBooks')} />
       ) : (
         <>
-          <Row gutter={[16, 16]}>
+          <Row gutter={[24, 24]}>
             {filteredBooks.map((book: Book) => (
               <Col xs={24} sm={12} md={8} lg={6} key={book._id}>
                 <Card
                   hoverable
                   onClick={() => navigate(`/books/${book._id}`)}
+                  style={{
+                    borderRadius: '12px',
+                    border: '2px solid var(--color-warm-gray)',
+                    position: 'relative',
+                    overflow: 'hidden',
+                  }}
                   cover={
                     <div
                       style={{
@@ -95,20 +128,46 @@ export function BooksPage() {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        backgroundColor: '#f0f0f0',
+                        background: 'linear-gradient(135deg, var(--color-bg-cream) 0%, var(--color-bg-beige) 100%)',
+                        position: 'relative',
                       }}
                     >
-                      <BookOutlined style={{ fontSize: '64px', color: '#1890ff' }} />
+                      <CornerOrnament position="top-right" color="var(--color-accent-gold)" size={25} />
+                      <BookOutlined
+                        style={{
+                          fontSize: '64px',
+                          color: 'var(--color-primary)',
+                        }}
+                      />
                     </div>
                   }
                 >
                   <Card.Meta
-                    title={book.titleAr}
+                    title={
+                      <span
+                        style={{
+                          fontFamily: "'Amiri', serif",
+                          fontSize: '16px',
+                          color: 'var(--color-text-primary)',
+                        }}
+                      >
+                        {book.titleAr}
+                      </span>
+                    }
                     description={
                       <>
-                        <div style={{ marginBottom: '8px' }}>{book.authorAr}</div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#888' }}>
-                          <Tag>{book.totalPages} صفحة</Tag>
+                        <div style={{ marginBottom: '8px', color: 'var(--color-text-secondary)' }}>
+                          {book.authorAr}
+                        </div>
+                        <div
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            fontSize: '12px',
+                            color: 'var(--color-text-light)',
+                          }}
+                        >
+                          <Tag color="green">{book.totalPages} صفحة</Tag>
                           <span>{formatFileSize(book.fileSize)}</span>
                         </div>
                       </>

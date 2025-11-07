@@ -17,6 +17,7 @@ import {
 import { EditOutlined, UserOutlined, BookOutlined, TeamOutlined, AudioOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { useProfile, useUpdateProfile } from '../hooks/useProfile';
+import { IslamicPattern, CornerOrnament } from '../components/patterns';
 
 export function ProfilePage() {
   const { t } = useTranslation();
@@ -83,26 +84,45 @@ export function ProfilePage() {
   }
 
   return (
-    <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
-      <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1>
-          <UserOutlined /> {t('profile.myProfile')}
-        </h1>
-        <Button icon={<EditOutlined />} onClick={() => setIsEditModalOpen(true)}>
-          {t('profile.editProfile')}
-        </Button>
+    <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+      <div
+        style={{
+          marginBottom: '32px',
+          padding: '32px',
+          background: 'linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%)',
+          borderRadius: '16px',
+          color: 'white',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        <IslamicPattern type="geometric" opacity={0.1} color="#d97706" />
+        <div style={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+          <h1 style={{ color: 'white', fontFamily: "'Amiri', serif", fontSize: '32px', margin: 0 }}>
+            <UserOutlined /> {t('profile.myProfile')}
+          </h1>
+          <Button
+            icon={<EditOutlined />}
+            onClick={() => setIsEditModalOpen(true)}
+            size="large"
+            style={{ background: 'var(--color-accent-gold)', border: 'none', color: 'white' }}
+          >
+            {t('profile.editProfile')}
+          </Button>
+        </div>
       </div>
 
       {/* Statistics */}
       {stats && (
         <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
           <Col xs={24} sm={12} md={6}>
-            <Card>
+            <Card style={{ borderRadius: '12px', border: '2px solid var(--color-primary)', position: 'relative' }}>
+              <CornerOrnament position="top-right" color="var(--color-accent-gold)" size={20} />
               <Statistic
                 title={t('profile.totalBooksRead')}
                 value={stats.totalBooksRead}
                 prefix={<BookOutlined />}
-                valueStyle={{ color: '#3f8600' }}
+                valueStyle={{ color: 'var(--color-primary)', fontWeight: 'bold' }}
               />
             </Card>
           </Col>
@@ -140,7 +160,20 @@ export function ProfilePage() {
       )}
 
       {/* Personal Information */}
-      <Card title={t('profile.personalInfo')} style={{ marginBottom: '16px' }}>
+      <Card
+        title={
+          <span style={{ fontFamily: "'Amiri', serif", color: 'var(--color-primary)' }}>
+            {t('profile.personalInfo')}
+          </span>
+        }
+        style={{
+          marginBottom: '16px',
+          borderRadius: '12px',
+          border: '2px solid var(--color-accent-gold)',
+          position: 'relative',
+        }}
+      >
+        <CornerOrnament position="all" color="var(--color-accent-gold)" size={25} />
         <Descriptions bordered column={1}>
           <Descriptions.Item label={t('auth.name')}>{user.name}</Descriptions.Item>
           <Descriptions.Item label={t('auth.email')}>{user.email}</Descriptions.Item>
