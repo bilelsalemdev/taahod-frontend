@@ -6,12 +6,17 @@ import { useSubjects } from '../hooks/useSubjects';
 import { useCreateBook } from '../hooks/useBooks';
 import type { UploadFile } from 'antd';
 import { pdfjs } from 'react-pdf';
+import { chunkedUploadService } from '../services/chunkUploadService';
+import { api } from '../services/api';
 
 // Configure PDF.js worker
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 const { TextArea } = Input;
 const { Dragger } = Upload;
+
+// File size threshold for chunked upload (10MB)
+const CHUNKED_UPLOAD_THRESHOLD = 10 * 1024 * 1024;
 
 interface BookUploadProps {
   open: boolean;
@@ -57,34 +62,67 @@ export function BookUpload({ open, onClose, onSuccess }: BookUploadProps) {
       return;
     }
 
-    const formData = new FormData();
-    // Append the file with the correct field name
-    formData.append('file', file as Blob, (file as File).name);
-    formData.append('titleAr', values.titleAr);
-    formData.append('title', values.title);
-    formData.append('authorAr', values.authorAr);
-    formData.append('author', values.author);
-    formData.append('subjectId', values.subjectId);
-    formData.append('totalPages', totalPages.toString());
-    
-    if (values.descriptionAr) {
-      formData.append('descriptionAr', values.descriptionAr);
-    }
-    if (values.description) {
-      formData.append('description', values.description);
-    }
-
-    // Debug: Log FormData contents
-    console.log('FormData contents:');
-    for (const pair of formData.entries()) {
-      console.log(pair[0], pair[1]);
-    }
+    const fileObj = file as File;
 
     try {
-      setUploadProgress(10);
-      await createBook.mutateAsync(formData);
-      setUploadProgress(100);
-      message.success(t('library.createSuccess'));
+      // Use chunked upload for large files
+      if (fileObj.size > CHUNKED_UPLOAD_THRESHOLD) {
+        message.loading({ content: 'Uploading file in chunks...', key: 'upload', duration: 0 });
+        
+        // Upload file in chunks
+        const uploadId = await chunkedUploadService.uploadFile({
+          file: fileObj,
+          onProgress: (progress) => {
+            setUploadProgress(progress.percentage);
+            message.loading({ 
+              content: `Uploading: ${progress.percentage}%`, 
+              key: 'upload',
+              duration: 0 
+            });
+          },
+        });
+
+        // Create book from chunks
+        message.loading({ content: 'Finalizing upload...', key: 'upload', duration: 0 });
+        
+        await api.post('/books/from-chunks', {
+          uploadId,
+          titleAr: values.titleAr,
+          title: values.title,
+          authorAr: values.authorAr,
+          author: values.author,
+          subjectId: values.subjectId,
+          totalPages: totalPages,
+          descriptionAr: values.descriptionAr || '',
+          description: values.description || '',
+        });
+
+        message.success({ content: t('library.createSuccess'), key: 'upload' });
+      } else {
+        // Use regular upload for small files
+        const formData = new FormData();
+        formData.append('file', fileObj, fileObj.name);
+        formData.append('titleAr', values.titleAr);
+        formData.append('title', values.title);
+        formData.append('authorAr', values.authorAr);
+        formData.append('author', values.author);
+        formData.append('subjectId', values.subjectId);
+        formData.append('totalPages', totalPages.toString());
+        
+        if (values.descriptionAr) {
+          formData.append('descriptionAr', values.descriptionAr);
+        }
+        if (values.description) {
+          formData.append('description', values.description);
+        }
+
+        setUploadProgress(10);
+        await createBook.mutateAsync(formData);
+        setUploadProgress(100);
+        message.success(t('library.createSuccess'));
+      }
+
+      // Reset form
       form.resetFields();
       setFileList([]);
       setUploadProgress(0);
@@ -93,7 +131,7 @@ export function BookUpload({ open, onClose, onSuccess }: BookUploadProps) {
       onClose();
     } catch (error: any) {
       setUploadProgress(0);
-      message.error(error.messageAr || error.message || t('common.error'));
+      message.error({ content: error.messageAr || error.message || t('common.error'), key: 'upload' });
     }
   };
 
