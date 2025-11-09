@@ -1,6 +1,6 @@
 import { api } from './api';
 
-const CHUNK_SIZE = 2 * 1024 * 1024; // 2MB chunks
+const CHUNK_SIZE = 512 * 1024; // 512KB chunks (smaller for better reliability)
 
 export interface UploadProgress {
   uploaded: number;

@@ -15,8 +15,8 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 const { TextArea } = Input;
 const { Dragger } = Upload;
 
-// File size threshold for chunked upload (10MB)
-const CHUNKED_UPLOAD_THRESHOLD = 10 * 1024 * 1024;
+// File size threshold for chunked upload (5MB)
+const CHUNKED_UPLOAD_THRESHOLD = 5 * 1024 * 1024;
 
 interface BookUploadProps {
   open: boolean;
