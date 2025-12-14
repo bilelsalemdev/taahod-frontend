@@ -227,7 +227,7 @@ export function MainLayout() {
             transition={{ duration: getDuration(200) / 1000 }}
             style={{
               position: 'absolute',
-              right: collapsed ? '60px' : '180px',
+              right: collapsed ? '40px' : '160px',
               transition: 'right 0.3s ease',
               zIndex: 10,
             }}

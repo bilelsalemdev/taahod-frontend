@@ -1,4 +1,5 @@
 import { api } from './api';
+import { ChunkDownloadService } from './chunkDownloadService';
 import type { Book, ApiResponse, PaginatedResponse, PaginationParams } from '../types';
 
 export const bookService = {
@@ -32,10 +33,13 @@ export const bookService = {
   },
 
   getFileUrl(id: string): string {
-    return `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/books/${id}/file`;
+    const token = localStorage.getItem('token');
+    const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+    // Include token in URL for PDF.js to work with authentication
+    return `${baseUrl}/books/${id}/file?token=${token}`;
   },
 
-  async downloadFile(id: string): Promise<Blob> {
+  async downloadFile(id: string, onProgress?: (progress: number) => void): Promise<Blob> {
     const response = await api.get(`/books/${id}/file`, {
       responseType: 'blob',
       timeout: 300000, // 5 minutes for large files
@@ -43,14 +47,23 @@ export const bookService = {
         if (progressEvent.total) {
           const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
           console.log(`Download progress: ${percentCompleted}%`);
+          onProgress?.(percentCompleted);
         }
       },
     });
     return response.data;
   },
 
-  async getFileBlob(id: string): Promise<string> {
-    const blob = await this.downloadFile(id);
+  async getFileBlob(id: string, onProgress?: (progress: number) => void): Promise<string> {
+    const blob = await this.downloadFile(id, onProgress);
     return URL.createObjectURL(blob);
+  },
+
+  /**
+   * Download book file in chunks (for large files)
+   */
+  async downloadFileInChunks(id: string, filename: string, onProgress?: (progress: number) => void): Promise<void> {
+    const url = this.getFileUrl(id);
+    await ChunkDownloadService.downloadAndSave(url, filename, { onProgress });
   },
 };

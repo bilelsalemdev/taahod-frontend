@@ -10,3 +10,5 @@ export { podcastService } from './podcastService';
 export { adhkarService } from './adhkarService';
 export { collaborationService } from './collaborationService';
 export { profileService } from './profileService';
+export { ChunkDownloadService } from './chunkDownloadService';
+export { chunkUploadService } from './chunkUploadService';

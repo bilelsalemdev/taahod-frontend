@@ -34,7 +34,7 @@ export function BookViewer({
   const [numPages, setNumPages] = useState<number>(initialTotalPages || 0);
   const [pageNumber, setPageNumber] = useState<number>(initialPage);
   const [scale, setScale] = useState<number>(1.0);
-  const [pdfBlobUrl, setPdfBlobUrl] = useState<string | null>(null);
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   const saveProgress = useSaveProgress();
@@ -43,34 +43,11 @@ export function BookViewer({
     setPageNumber(initialPage);
   }, [initialPage]);
 
-  // Load PDF with authentication
+  // Get PDF URL with authentication token
   useEffect(() => {
-    let isMounted = true;
-    
-    const loadPdf = async () => {
-      try {
-        setLoading(true);
-        const blobUrl = await bookService.getFileBlob(bookId);
-        if (isMounted) {
-          setPdfBlobUrl(blobUrl);
-          setLoading(false);
-        }
-      } catch (error) {
-        console.error('Failed to load PDF:', error);
-        if (isMounted) {
-          setLoading(false);
-        }
-      }
-    };
-
-    loadPdf();
-
-    return () => {
-      isMounted = false;
-      if (pdfBlobUrl) {
-        URL.revokeObjectURL(pdfBlobUrl);
-      }
-    };
+    const url = bookService.getFileUrl(bookId);
+    setPdfUrl(url);
+    setLoading(false);
   }, [bookId]);
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
@@ -168,13 +145,19 @@ export function BookViewer({
           backgroundColor: '#525659',
         }}
       >
-        {loading || !pdfBlobUrl ? (
+        {loading || !pdfUrl ? (
           <div style={{ textAlign: 'center', padding: '50px' }}>
             <Spin size="large" />
           </div>
         ) : (
           <Document
-            file={pdfBlobUrl}
+            file={{
+              url: pdfUrl,
+              httpHeaders: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+              },
+              withCredentials: false,
+            }}
             onLoadSuccess={onDocumentLoadSuccess}
             loading={
               <div style={{ textAlign: 'center', padding: '50px' }}>
@@ -186,6 +169,14 @@ export function BookViewer({
                 {t('common.error')}
               </div>
             }
+            options={{
+              cMapUrl: `//unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
+              cMapPacked: true,
+              standardFontDataUrl: `//unpkg.com/pdfjs-dist@${pdfjs.version}/standard_fonts/`,
+              disableAutoFetch: false,
+              disableStream: false,
+              disableRange: false,
+            }}
           >
             <Page
               pageNumber={pageNumber}
